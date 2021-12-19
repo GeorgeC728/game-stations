@@ -1,0 +1,23 @@
+{
+    "builders": [
+        {
+            "type": "googlecompute",
+            "project_id": "george-cloud-334811",
+            "zone": "europe-west2-c",
+            "machine_type": "g1-small",
+            "source_image_family": "base-image",
+            "image_name": "minecraft-image-{{isotime `20060102-150405`}}",
+            "image_family": "minecraft-image",
+            "image_description": "Image with a minecraft server",
+            "ssh_username": "root"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "scripts": [
+                "{{template_dir}}/../scripts/minecraft_image/setup_minecraft.sh"],
+            "execute_command": "{{.Path}}"
+        }
+    ]
+}

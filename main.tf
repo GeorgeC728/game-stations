@@ -1,3 +1,7 @@
+resource "google_compute_address" "static" {
+    name = "ipv4-address"
+}
+
 resource "google_compute_firewall" "default" {
     name    = "gameserver-firewall"
     network = "default"
@@ -6,7 +10,7 @@ resource "google_compute_firewall" "default" {
     }
     allow {
         protocol = "tcp"
-        ports    = ["22", "139", "445"]
+        ports    = ["22", "139", "445", "25565"]
     }
     
         source_ranges = ["0.0.0.0/0"]
@@ -22,12 +26,14 @@ resource "google_compute_instance" "gameserver" {
     # Boot disk
     boot_disk {
         initialize_params {
-            image = "base-image"
+            image = "minecraft-image"
         }
     }
     network_interface {
         network = "default"
-        access_config {} // use ephemeral public IP
+        access_config {
+            nat_ip = google_compute_address.static.address
+        }
     }
 
     # Make preemptible
