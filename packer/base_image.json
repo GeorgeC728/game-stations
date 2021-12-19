@@ -9,15 +9,25 @@
             "image_name": "base-image-{{isotime `20060102-150405`}}",
             "image_family": "base-image",
             "image_description": "Image with Docker and a samba fileshare",
-            "ssh_username": "developer"
+            "ssh_username": "root"
         }
     ],
     "provisioners": [
         {
             "type": "shell",
+            "inline": ["mkdir /secrets"]
+        },
+        {
+            "type": "file",
+            "source": "{{template_dir}}/../secrets/.smbpass",
+            "destination": "/secrets/.smbpass"
+        },
+        {
+            "type": "shell",
             "scripts": [
-                "{{template_dir}}/../scripts/base_image/install_packages.sh"],
-            "execute_command": "sudo {{.Path}}"
+                "{{template_dir}}/../scripts/base_image/install_packages.sh",
+                "{{template_dir}}/../scripts/base_image/setup_samba.sh"],
+            "execute_command": "{{.Path}}"
         }
     ]
 }
